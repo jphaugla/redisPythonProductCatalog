@@ -6,7 +6,7 @@ REDIS_HOST = 'localhost'
 
 def main():
     conn = redis.Redis('localhost')
-    with open('../data/CategoriesList.xml') as xml_file:
+    with open('data/CategoriesList.xml') as xml_file:
         # create element tree object
         tree = ET.parse(xml_file)
 

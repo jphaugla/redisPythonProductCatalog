@@ -1,6 +1,10 @@
 import csv
 import redis
 import sys
+
+
+from redis.client import Pipeline
+
 maxInt = sys.maxsize
 
 
@@ -8,9 +12,13 @@ REDIS_HOST = 'localhost'
 
 
 def main():
-    conn = redis.Redis('localhost')
+    # global redis_pool
+    # print("PID %d: initializing redis pool..." % os.getpid())
+    # redis_pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
+    conn = redis.Redis(host='localhost', port=6379, db=0)
+    pipe = conn.pipeline()
     #  open the file to read as csv
-    with open('../data/files.index.csv') as csv_file:
+    with open('data/files.index.csv') as csv_file:
         # file is tab delimited
         csv_reader = csv.reader(csv_file, delimiter='\t', quoting=csv.QUOTE_NONE)
         prod_idx = 0
@@ -24,8 +32,15 @@ def main():
             # 0)path 1)product_id 2)updated 3)quality 4)supplier_id 5)prod_id 6)catid 7)m_prod_id 8)ean_upc 9)on_market
             # 10)country_market 11)model_name 12)product_view 13)high_pic 14)high_pic_size 15)high_pic_width 16)high_pic_height
             # 17)m_supplier_id 18)m_supplier_name 19)ean_upc_is_approved 20)Limited Date_Added
+            # index will be model name and hold value of prod_idx
+            index_value = str(row[11]) + ":" + str(prod_idx)
+            pipe.zadd("zProdModelName", {index_value: 0})
+            # add the category name  ****  WARNING *****  the category name breaks pipelining
+            # category_id = 'categ:' + row[6]
+            # categ_name = conn.hget(category_id, "Name")
+            # print("category name is " + str(categ_name))
+            # conn.hset(hash_key, "cat_name", str(categ_name))
             col_idx = 0
-            pipe = conn.pipeline()
             for col in row:
                 # print("column hdr " + fields[col_idx])
                 # print("column value " + col)
@@ -38,9 +53,6 @@ def main():
                 hash_key = "prod:" + str(prod_idx)
                 if col and not col.isspace():
                     pipe.hset(hash_key, fields[col_idx], col)
-                    # index will be model name and hold value of prod_idx
-                    index_value = str(row[11]) + ":" + str(prod_idx)
-                    pipe.zadd("zProdModelName", {index_value: 0})
                 col_idx += 1
             if prod_idx % 100 == 0:
                 pipe.execute()
@@ -48,6 +60,8 @@ def main():
                     print(str(prod_idx) + " rows loaded")
         csv_file.close()
         print(str(prod_idx) + " rows loaded")
+        pipe.set("prod_highest_idx", prod_idx)
+        pipe.execute()
 
 
 if '__main__' == __name__:

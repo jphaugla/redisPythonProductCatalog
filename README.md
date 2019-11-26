@@ -44,17 +44,20 @@ gunzip CategoriesList.xml.gz
 ```
   * load categories
 ```bash
-python ./src/categoryImport.py
+python3 ./src/categoryImport.py
 ```
   * load Products
 ```bash
-python ./src/productImport.py
+python3 ./src/productImport.py
 ```
   * start flask app server
+This only works with python2-hopefully can fix the bug soon
  ```bash
- python ./src/appy.py
+ python2 ./src/appy.py
  ```
   * run API tests
+Note:  there are multiple API tests in the file but only one should be run at a time
+So, the tests not to be run should be commented out.
  ```bash
 ./scripts/sampleput.sh
 ```
