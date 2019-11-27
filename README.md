@@ -2,14 +2,14 @@
 A simple product catalog solution based on icecat files
 ## Initial project setup
 Get this github code
-``bash 
+```bash 
 get clone https://github.com/jphaugla/redisPythonProductCatalog.git
 ```
 Two options for setting the environment are given:  
   * run with docker-compose using a flask and redis container
   * installing for mac os
-
-## Start up docker
+docker-compose is much easier and is main method documented here
+## docker compose startup
 ```bash
 docker-compose up -d --build
 ```
@@ -51,7 +51,7 @@ So, the tests not to be run should be commented out.
  ```bash
 ./scripts/sampleput.sh
 ```
-#  installing on mac
+##  installing on mac
 1. install xcode
 2. install homebrew
 ```bash
