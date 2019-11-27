@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  redis:
+    image: 'bitnami/redis:5.0'
+    container_name: redis
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redis_data:/bitnami/redis/data
+  flask:
+    image: webapp-flask
+    container_name: flask
+    build:
+      context: .
+      dockerfile: Dockerfile-flask
+    ports:
+      - '5000:5000'
+    volumes:
+      - "./src/:/app"
+      - "./data/:/data"
