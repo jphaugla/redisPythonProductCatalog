@@ -61,17 +61,18 @@ def home(path):
             min_str = '[' + search_str
             max_str = min_str + "~"
             print("min is " + min_str + " max is " + max_str)
-            product_index = db.zrangebylex("zProdModelName", min_str, max_str)
-            # print("category_idx is " + category_index)
-            product_list = str(product_index[0]).split(':')
-            product_name = str(product_list[0].strip("'"))
-            product_id = product_list[1].strip("'")
-            print("product_name is " + product_name)
-            print("product_id is " + product_id)
-            # a = {'name':'Sarah', 'age': 24, 'isEmployed': True }
-            product_list = db.hgetall("prod:"+product_id)
-            # product_results = '{' + product_id + ':' + product_name + '}'
-            return_string = jsonify(product_list, 200)
+            product_list = db.zrangebylex("zProdModelName", min_str, max_str)
+            product_results = []
+            for prod in product_list:
+                # print("prod is " + prod)
+                product_idx = prod.split(':')
+                product_id = product_idx[1]
+                # print("product_idx is ")
+                # print(product_idx)
+                # print("product_id is " + product_id)
+                product_record = db.hgetall("prod:"+product_id)
+                product_results.append(product_record)
+            return_string = jsonify(product_results, 200)
 
         # category passed in will be Category name, need to get the category index and pull products with category index
         elif path == 'category':
