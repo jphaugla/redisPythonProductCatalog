@@ -17,7 +17,6 @@ def main():
         for child in root:
             print("child tag is " + child.tag)
             print("child attribute is " + str(child.attrib))
-        pipe = conn.pipeline()
         for cat in root.findall('Response/CategoriesList/Category'):
             # print("starting in xml file")
             # print("cat.tag is " + str(cat.tag))
@@ -29,9 +28,9 @@ def main():
             category_id = 'categ:' + cat_id
             conn.hset(category_id, "ID", cat_id)
             if cat.attrib['LowPic']:
-                pipe.hset(category_id, "lowpic", cat.attrib['LowPic'])
+                conn.hset(category_id, "lowpic", cat.attrib['LowPic'])
             if cat.attrib['ThumbPic']:
-                pipe.hset(category_id, "thumbpic", cat.attrib['ThumbPic'])
+                conn.hset(category_id, "thumbpic", cat.attrib['ThumbPic'])
             for cat_child in cat:
                 # category_id is
                 # print("cat_child.tag is " + str(cat_child.tag))
@@ -39,14 +38,12 @@ def main():
                 if cat_child.tag == 'Name' and cat_child.attrib['langid'] == '1':
                     cat_name = cat_child.attrib['Value']
                     # print("category name is " + cat_name)
-                    pipe.hset(category_id, "Name", cat_name)
+                    conn.hset(category_id, "Name", cat_name)
                     # add sorted list with CategoryName to category_id
                     index_value = cat_name + ":" + str(cat_id)
-                    pipe.zadd("zCategoryName", {index_value: 0})
-            if cat_cntr % 200 == 0:
-                pipe.execute()
-                if cat_cntr % 1000 == 0:
-                    print(str(cat_cntr) + " categories loaded")
+                    conn.zadd("zCategoryName", {index_value: 0})
+            if cat_cntr % 1000 == 0:
+                print(str(cat_cntr) + " categories loaded")
 
     xml_file.close()
     print(str(cat_cntr) + " categories loaded")
