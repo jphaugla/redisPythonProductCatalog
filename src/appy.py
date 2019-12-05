@@ -15,8 +15,6 @@ app = Flask(__name__)
 app.debug = True
 db = redis.StrictRedis('redis', charset="utf-8", decode_responses=True)  # connect to server
 
-ttl = 31104000  # one year
-
 
 def isInt(s):
     try:
@@ -41,12 +39,11 @@ def home(path):
             path = "prod:" + str(prod_idx)
             print("insert-new index is " + path)
         else:
+            db.delete(path)  # remove old keys
             print("prod_idx exists so is a replace")
         event['updated'] = int(time.time())
-        event['ttl'] = ttl
-        db.delete(path)  # remove old keys
+        event['prod_idx'] = path
         db.hmset(path, event)
-        db.expire(path, ttl)
         return_string = jsonify(event, 201)
 
     elif request.method == 'DELETE':
@@ -119,7 +116,6 @@ def home(path):
         else:
             event = db.hgetall(path)
             print("got event back" + str(event))
-            event["ttl"] = db.ttl(path)
             # put path in as product index
             event["prod_idx"] = path
             # cast integers accordingly, nested arrays, dicts not supported for now  :(
