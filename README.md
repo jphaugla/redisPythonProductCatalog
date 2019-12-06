@@ -36,13 +36,14 @@ gunzip CategoriesList.xml.gz
 docker exec -it flask bash -c "python categoryImport.py"
 ```
 ### load Products
-This can take quite a long time (maybe 15 minutes)
+This can take quite a long time (maybe 35 minutes)
 ```bash
 docker exec -it flask bash -c "python productImport.py"
 ```
-  * start flask app server
+  * THIS IS HOW to start flask app server
+  * However, it is already running as part of the flask container
  ```bash
- docker exec -it flask bash -c "python appy.py"
+#  docker exec -it flask bash -c "python appy.py"
  ```
   * run API tests
 Note:  there are multiple API tests in the file but only one should be run at a time
