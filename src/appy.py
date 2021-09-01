@@ -1,15 +1,9 @@
 #!/bin/python
-
-# Dependencies:
-# pip install flask
-# pip install redis
-
 from flask import Flask, jsonify
 from flask import request
 import redis
 import time
-import json
-from flask import Response, stream_with_context
+
 from os import environ
 
 app = Flask(__name__)

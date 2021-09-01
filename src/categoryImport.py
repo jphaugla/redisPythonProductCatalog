@@ -1,3 +1,4 @@
+#!/bin/python
 import xml.etree.ElementTree as ET
 import redis
 from os import environ

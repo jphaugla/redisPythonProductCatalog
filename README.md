@@ -32,11 +32,13 @@ unzip files.index.csv.zip
 gunzip CategoriesList.xml.gz
 ```
 ### load categories
+The redis node and port can be changed. The python code uses 2 environment variable REDIS_SERVER and REDIS_PORT.  The default is REDIS_SERVER=redis and REDIS_PORT=6379
 ```bash
 docker exec -it flask bash -c "python categoryImport.py"
 ```
 ### load Products
 This can take quite a long time (maybe 35 minutes)
+The redis node and port can be changed. The python code uses 2 environment variable REDIS_SERVER and REDIS_PORT.  The default is REDIS_SERVER=redis and REDIS_PORT=6379
 ```bash
 docker exec -it flask bash -c "python productImport.py"
 ```

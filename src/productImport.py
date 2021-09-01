@@ -1,3 +1,5 @@
+#!/bin/python
+
 import csv
 import redis
 import sys
