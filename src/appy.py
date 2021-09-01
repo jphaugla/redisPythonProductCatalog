@@ -10,10 +10,24 @@ import redis
 import time
 import json
 from flask import Response, stream_with_context
+from os import environ
 
 app = Flask(__name__)
 app.debug = True
-db = redis.StrictRedis('redis', charset="utf-8", decode_responses=True)  # connect to server
+if environ.get('REDIS_SERVER') is not None:
+    redis_server = environ.get('REDIS_SERVER')
+    print("passed in redis server is " + redis_server)
+else:
+    redis_server = 'redis'
+    print("no passed in redis server variable ")
+
+if environ.get('REDIS_PORT') is not None:
+    redis_port = int(environ.get('REDIS_PORT'))
+    print("passed in redis port is " + str(redis_port))
+else:
+    redis_port = 6379
+    print("no passed in redis port variable ")
+db = redis.StrictRedis(redis_server, redis_port, charset="utf-8", decode_responses=True)  # connect to server
 print("beginning of appy.py")
 
 def isInt(s):

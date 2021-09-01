@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import redis
+from os import environ
 
 from Category import Category
 
@@ -7,7 +8,21 @@ REDIS_HOST = 'redis'
 
 
 def main():
-    conn = redis.StrictRedis(REDIS_HOST, charset="utf-8", decode_responses=True)
+    if environ.get('REDIS_SERVER') is not None:
+        redis_server = environ.get('REDIS_SERVER')
+        print("passed in redis server is " + redis_server)
+    else:
+        redis_server = 'redis'
+        print("no passed in redis server variable ")
+
+    if environ.get('REDIS_PORT') is not None:
+        redis_port = int(environ.get('REDIS_PORT'))
+        print("passed in redis port is " + str(redis_port))
+    else:
+        redis_port = 6379
+        print("no passed in redis port variable ")
+
+    conn = redis.StrictRedis(redis_server, redis_port, charset="utf-8", decode_responses=True)
     with open('/data/CategoriesList.xml') as xml_file:
         # create element tree object
         tree = ET.parse(xml_file)
