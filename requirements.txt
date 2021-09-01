@@ -1,0 +1,4 @@
+# requirements.txt
+Flask
+redis
+uwsgi
